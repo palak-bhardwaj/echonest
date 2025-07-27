@@ -17,7 +17,12 @@ import CalendarFilter from "../../components/CalendarFilter.jsx";
 
 const Home = () => {
   const navigate = useNavigate();
-
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
   const [userInfo, setUserInfo] = useState(null);
   const [allStories, setAllStories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
