@@ -25,223 +25,164 @@ const AddEditTravelStory = ({
   );
   const [error, setError] = useState("");
 
-  // Add New Travel Story
   const addNewTravelStory = async () => {
     try {
       let imageUrl = "";
-
-      // Upload image if present
       if (storyImg) {
         const imgUploadRes = await uploadImage(storyImg);
-        // Get image URL
         imageUrl = imgUploadRes.imageUrl || "";
       }
 
       const response = await axiosInstance.post("/add-travel-story", {
         title,
         story,
-        imageUrl: imageUrl || "",
+        imageUrl,
         visitedLocation,
         visitedDate: visitedDate
           ? moment(visitedDate).valueOf()
           : moment().valueOf(),
       });
 
-      if (response.data && response.data.story) {
+      if (response.data?.story) {
         toast.success("Story Added Successfully");
-        // Refresh stories
         getAllTravelStories();
-        // Close modal or form
         onClose();
       }
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setError(error.response.data.message);
-      } else {
-        // Handle unexpected errors
-        setError("An unexpected error occurred. Please try again.");
-      }
+      setError(error?.response?.data?.message || "Something went wrong.");
     }
   };
 
-  // Update Travel Story
   const updateTravelStory = async () => {
     const storyId = storyInfo._id;
     try {
-      let imageUrl = "";
+      let imageUrl = storyInfo.imageUrl || "";
 
-      let postData = {
+      if (typeof storyImg === "object") {
+        const imgUploadRes = await uploadImage(storyImg);
+        imageUrl = imgUploadRes.imageUrl || "";
+      }
+
+      const response = await axiosInstance.put(`/edit-story/${storyId}`, {
         title,
         story,
-        imageUrl: storyInfo.imageUrl || "",
+        imageUrl,
         visitedLocation,
         visitedDate: visitedDate
           ? moment(visitedDate).valueOf()
           : moment().valueOf(),
-      };
+      });
 
-      if (typeof storyImg === "object") {
-        // Upload New Image
-        const imgUploadRes = await uploadImage(storyImg);
-        imageUrl = imgUploadRes.imageUrl || "";
-
-        postData = {
-          ...postData,
-          imageUrl: imageUrl,
-        };
-      }
-
-      const response = await axiosInstance.put(
-        "/edit-story/" + storyId,
-        postData
-      );
-
-      if (response.data && response.data.story) {
+      if (response.data?.story) {
         toast.success("Story Updated Successfully");
-        // Refresh stories
         getAllTravelStories();
-        // Close modal or form
         onClose();
       }
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setError(error.response.data.message);
-      } else {
-        // Handle unexpected errors
-        setError("An unexpected error occurred. Please try again.");
-      }
+      setError(error?.response?.data?.message || "Something went wrong.");
     }
   };
 
   const handleAddOrUpdateClick = () => {
-    // console.log("Input Data:", {title, storyImg, story, visitedLocation, visitedDate });
-
-    if (!title) {
-      setError("Please enter the title");
-      return;
-    }
-
-    if (!story) {
-      setError("Please enter the story");
-      return;
-    }
+    if (!title) return setError("Please enter the title");
+    if (!story) return setError("Please enter the story");
 
     setError("");
-
-    if (type === "edit") {
-      updateTravelStory();
-    } else {
-      addNewTravelStory();
-    }
+    type === "edit" ? updateTravelStory() : addNewTravelStory();
   };
 
-  // Delete story image and Update the story
   const handleDeleteStoryImg = async () => {
-    // Delete the Image
-    const deleteImgRes = await axiosInstance.delete("/delete-image", {
-      params: {
-        imageUrl: storyInfo.imageUrl,
-      },
+    await axiosInstance.delete("/delete-image", {
+      params: { imageUrl: storyInfo.imageUrl },
     });
 
-    if (deleteImgRes.data) {
-      const storyId = storyInfo._id;
+    const postData = {
+      title,
+      story,
+      visitedLocation,
+      visitedDate: moment().valueOf(),
+      imageUrl: "",
+    };
 
-      const postData = {
-        title,
-        story,
-        visitedLocation,
-        visitedDate: moment().valueOf(),
-        imageUrl: "",
-      };
-
-      // Updating story
-      const response = await axiosInstance.put(
-        "/edit-story/" + storyId,
-        postData
-      );
-      setStoryImg(null);
-    }
+    await axiosInstance.put(`/edit-story/${storyInfo._id}`, postData);
+    setStoryImg(null);
   };
 
   return (
-    <div className="relative">
-      <div className="flex items-center justify-between">
-        <h5 className="text-xl font-medium text-slate-700">
-          {type === "add" ? "Add Story" : "Update Story"}
-        </h5>
+    <div className="relative bg-white p-6 rounded-xl shadow-lg space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b pb-3">
+        <h2 className="text-xl font-semibold text-slate-800">
+          {type === "add" ? "Add New Story" : "Update Story"}
+        </h2>
 
-        <div>
-          <div className="flex items-center gap-3 bg-cyan-50/50 p-2 rounded-l-lg">
+        <div className="flex items-center gap-2">
+          <button
+            className="flex items-center gap-2 bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600 transition"
+            onClick={handleAddOrUpdateClick}
+          >
             {type === "add" ? (
-              <button className="btn-small" onClick={handleAddOrUpdateClick}>
-                <MdAdd className="text-lg" /> ADD STORY
-              </button>
+              <>
+                <MdAdd className="text-lg" /> Add Moment
+              </>
             ) : (
               <>
-                <button className="btn-small" onClick={handleAddOrUpdateClick}>
-                  <MdUpdate className="text-lg" /> UPDATE STORY
-                </button>
+                <MdUpdate className="text-lg" /> Update
               </>
             )}
+          </button>
 
-            <button className="" onClick={onClose}>
-              <MdClose className="text-xl text-slate-400" />
-            </button>
-          </div>
-
-          {error && (
-            <p className="text-red-500 text-xs pt-2 text-right">{error}</p>
-          )}
+          <button
+            className="p-2 hover:bg-slate-200 rounded-full transition"
+            onClick={onClose}
+          >
+            <MdClose className="text-xl text-slate-500" />
+          </button>
         </div>
       </div>
 
+      {error && <p className="text-red-500 text-sm text-right">{error}</p>}
+
+      {/* Title Input */}
       <div>
-        <div className="flex-1 flex flex-col gap-2 pt-4">
-          <label className="input-label">TITLE</label>
-          <input
-            type="text"
-            className="text-2xl text-slate-950 outline-none"
-            placeholder="A Day at the Great Wall"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          />
+        <label className="text-sm font-medium text-slate-700">Title</label>
+        <input
+          type="text"
+          className="w-full text-lg mt-1 p-3 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400"
+          placeholder="A Day at the Great Wall"
+          value={title}
+          onChange={({ target }) => setTitle(target.value)}
+        />
+      </div>
 
-          <div className="my-3">
-            <DateSelector date={visitedDate} setDate={setVisitedDate} />
-          </div>
+      {/* Date Picker */}
+      <div className="mt-2">
+        <DateSelector date={visitedDate} setDate={setVisitedDate} />
+      </div>
 
-          <ImageSelector
-            image={storyImg}
-            setImage={setStoryImg}
-            handleDeleteImg={handleDeleteStoryImg}
-          />
+      {/* Image Selector */}
+      <ImageSelector
+        image={storyImg}
+        setImage={setStoryImg}
+        handleDeleteImg={handleDeleteStoryImg}
+      />
 
-          <div className="flex flex-col gap-2 mt-4">
-            <label className="input-label">STORY</label>
-            <textarea
-              type="text"
-              className="text-sm text-slate-950 outline-none bg-slate-50 p-2 rounded"
-              placeholder="Your Story"
-              rows={10}
-              value={story}
-              onChange={({ target }) => setStory(target.value)}
-            />
-          </div>
+      {/* Story Textarea */}
+      <div>
+        <label className="text-sm font-medium text-slate-700">Story</label>
+        <textarea
+          className="w-full mt-1 text-sm text-slate-800 bg-slate-50 p-3 rounded-md border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-300"
+          placeholder="Your story and mood..."
+          rows={8}
+          value={story}
+          onChange={({ target }) => setStory(target.value)}
+        />
+      </div>
 
-          <div className="pt-3">
-            <label className="input-label">VISITED LOCATIONS</label>
-            <TagInput tags={visitedLocation} setTags={setVisitedLocation} />
-          </div>
-        </div>
+      {/* Tag Input */}
+      <div>
+        <label className="text-sm font-medium text-slate-700">Location</label>
+        <TagInput tags={visitedLocation} setTags={setVisitedLocation} />
       </div>
     </div>
   );

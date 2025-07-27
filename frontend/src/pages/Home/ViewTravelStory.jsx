@@ -1,66 +1,64 @@
 import moment from "moment";
-import React from "react";
 import { GrMapLocation } from "react-icons/gr";
 import { MdClose, MdDeleteOutline, MdUpdate } from "react-icons/md";
 
-const ViewTravelStory = ({
-  storyInfo,
-  onClose,
-  onEditClick,
-  onDeleteClick,
-}) => {
+const ViewTravelStory = ({ storyInfo, onClose, onEditClick, onDeleteClick }) => {
   return (
-    <div className="relative">
-      <div className="flex items-center justify-end">
-        <div>
-          <div className="flex items-center gap-3 bg-cyan-50/50 p-2 rounded-l-lg">
-            <button className="btn-small" onClick={onEditClick}>
-              <MdUpdate className="text-lg" /> UPDATE STORY
-            </button>
+    <div className="relative bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-3xl mx-auto">
+      {/* Header Buttons */}
+      <div className="flex justify-end mb-4">
+        <div className="flex items-center gap-3 bg-cyan-50/60 px-4 py-2 rounded-md shadow-sm">
+          <button
+            className="flex items-center gap-2 text-sm font-medium text-cyan-700 hover:text-cyan-800 hover:bg-cyan-100 transition px-3 py-1 rounded-md"
+            onClick={onEditClick}
+          >
+            <MdUpdate className="text-lg" /> Update
+          </button>
 
-            <button className="btn-small btn-delete" onClick={onDeleteClick}>
-              <MdDeleteOutline className="text-lg" /> DELETE
-            </button>
+          <button
+            className="flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-100 transition px-3 py-1 rounded-md"
+            onClick={onDeleteClick}
+          >
+            <MdDeleteOutline className="text-lg" /> Delete
+          </button>
 
-            <button className="" onClick={onClose}>
-              <MdClose className="text-xl text-slate-400" />
-            </button>
-          </div>
+          <button
+            className="flex items-center justify-center text-slate-400 hover:text-slate-600 transition"
+            onClick={onClose}
+          >
+            <MdClose className="text-xl" />
+          </button>
         </div>
       </div>
 
-      <div>
-        <div className="flex-1 flex flex-col gap-2 py-4">
-          <h1 className="text-2xl text-slate-950">
-            {storyInfo && storyInfo.title}
-          </h1>
+      {/* Story Content */}
+      <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-semibold text-slate-900">
+          {storyInfo?.title}
+        </h1>
 
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-xs text-slate-500">
-              {storyInfo && moment(storyInfo.visitedDate).format("Do MMM YYYY")}
-            </span>
+        {/* Date and Location */}
+        <div className="flex flex-wrap justify-between items-center gap-3 text-sm text-slate-600">
+          <span>
+            📅 {storyInfo && moment(storyInfo.visitedDate).format("Do MMM YYYY")}
+          </span>
 
-            <div className="inline-flex items-center gap-2 text-[13px] text-cyan-600 bg-cyan-200/40 rounded px-2 py-1">
-              <GrMapLocation className="text-sm" />
-              {storyInfo &&
-                storyInfo.visitedLocation.map((item, index) =>
-                  storyInfo.visitedLocation.length == index + 1
-                    ? `${item}`
-                    : `${item}, `
-                )}
-            </div>
+          <div className="flex items-center gap-2 bg-cyan-100/60 text-cyan-800 font-medium px-3 py-1 rounded-md">
+            <GrMapLocation className="text-base" />
+            {storyInfo?.visitedLocation?.join(", ")}
           </div>
         </div>
+
+        {/* Image */}
         <img
-          src={storyInfo && storyInfo.imageUrl}
-          alt="Selected"
-          className="w-full h-[300px] object-cover rounded-lg"
+          src={storyInfo?.imageUrl}
+          alt="Travel Story"
+          className="w-full h-[300px] rounded-lg object-cover shadow-sm border border-slate-200"
         />
 
-        <div className="mt-4">
-          <p className="text-sm text-slate-950 leading-6 text-justify whitespace-pre-line">
-            {storyInfo.story}
-          </p>
+        {/* Story Text */}
+        <div className="text-sm text-slate-800 leading-relaxed whitespace-pre-line mt-2 text-justify">
+          {storyInfo?.story}
         </div>
       </div>
     </div>

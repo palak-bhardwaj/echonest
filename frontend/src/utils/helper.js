@@ -28,8 +28,8 @@ export const getEmptyCardMessage = (filterType) => {
             return `No stories found in the given date range.`;
 
         default:
-            return `Start creating your first Travel Story! Click the 'Add' button to jot
-              down your thoughts, ideas, and memories. Let's get started!`;
+            return `Start creating your first Story! Click the 'Add' button to note
+              down your thoughts and memories. Let's get started!!`;
     }
 };
 

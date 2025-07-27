@@ -1,5 +1,3 @@
-import React from "react";
-import LOGO from "../assets/images/logo.png";
 import ProfileInfo from "./Cards/ProfileInfo";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "./Input/SearchBar";
@@ -31,21 +29,26 @@ const Navbar = ({
   };
 
   return (
-    <div className="bg-white flex items-center justify-between px-6 py-2 drop-shadow sticky top-0 z-10">
-      <img src={LOGO} alt="travel story" className="h-9" />
+    <div className="bg-gradient-to-r from-cyan-100 via-cyan-50 to-white shadow-md px-1 sm:px-8 py-2 sticky top-0 z-20 flex items-center justify-between rounded-b-lg">
+      {/* Logo / Title */}
+      <h1 className="text-2xl sm:text-2xl font-bold text-[#01b0cb] tracking-tight">
+        WanderTales
+      </h1>
 
+      {/* Conditional render based on login */}
       {isToken && (
-        <>
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 w-full sm:w-auto mt-3 sm:mt-0">
+          {/* Search */}
           <SearchBar
             value={searchQuery}
-            onChange={({ target }) => {
-              setSearchQuery(target.value);
-            }}
+            onChange={({ target }) => setSearchQuery(target.value)}
             handleSearch={handleSearch}
             onClearSearch={onClearSearch}
           />
-          <ProfileInfo userInfo={userInfo} onLogout={onLogout} />{" "}
-        </>
+
+          {/* Profile Info */}
+          <ProfileInfo userInfo={userInfo} onLogout={onLogout} />
+        </div>
       )}
     </div>
   );
