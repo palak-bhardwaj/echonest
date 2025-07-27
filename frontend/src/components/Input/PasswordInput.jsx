@@ -13,6 +13,7 @@ const PasswordInput = ({ value, onChange, placeholder }) => {
   return (
     <div className='flex items-center bg-cyan-600/5 px-5 rounded mb-3'>
       <input
+      id={Math.random()}
         value={value}
         onChange={onChange}
         placeholder={placeholder || "Password"}

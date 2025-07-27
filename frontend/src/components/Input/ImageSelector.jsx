@@ -65,6 +65,7 @@ const ImageSelector = ({ image, setImage, handleDeleteImg }) => {
       ) : (
         <div className="w-full relative">
           <img
+          id={Math.random()}
             src={previewUrl}
             alt="Selected"
             className="w-full h-[300px] object-cover rounded-lg"

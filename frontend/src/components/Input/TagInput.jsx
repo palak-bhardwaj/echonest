@@ -52,6 +52,7 @@ const TagInput = ({ tags, setTags }) => {
           placeholder="Add Location"
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
+          id={Math.random()}
         />
 
         <button

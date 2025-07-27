@@ -83,6 +83,7 @@ const SignUp = () => {
             </h4>
 
             <input
+            id={Math.random()}
               type="text"
               placeholder="Full Name"
               className="input-box"
@@ -91,6 +92,7 @@ const SignUp = () => {
             />
 
             <input
+            id={Math.random()}
               type="text"
               placeholder="Email"
               className="input-box"

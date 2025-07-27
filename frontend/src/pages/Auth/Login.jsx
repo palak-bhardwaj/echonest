@@ -75,6 +75,7 @@ const Login = () => {
             </h4>
 
             <input
+            id={Math.random()}
               type="text"
               placeholder="Email"
               className="input-box"
@@ -83,6 +84,7 @@ const Login = () => {
             />
 
             <PasswordInput
+            id={Math.random()}
               value={password}
               onChange={({ target }) => setPassword(target.value)}
             />

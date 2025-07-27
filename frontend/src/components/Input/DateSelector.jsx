@@ -36,6 +36,7 @@ const DateSelector = ({ date, setDate }) => {
             selected={date}
             onSelect={setDate}
             pagedNavigation
+            id={Math.random()}
           />
         </div>
       )}
