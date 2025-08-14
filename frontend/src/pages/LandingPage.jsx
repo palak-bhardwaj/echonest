@@ -12,7 +12,7 @@ const LandingPage = () => {
 
       {/* Main Content */}
       <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6 z-10">
-        Your Travel Journal, Reinvented
+        Your Memories Journal, Reinvented
       </h1>
       <p className="text-lg sm:text-xl max-w-2xl mx-auto text-white/90 mb-8 z-10">
         Document your experiences and relive every moment. Create your personal dairy today.
